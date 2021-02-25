@@ -84,7 +84,7 @@ const Thum = ({cut}) => {
     }, [cut, mousemove, setMountimg, setImg, thumImgRef.current, setImgMaxWidth, setImgMaxHeight, setWillmount])
 
     // mouse move event
-    const onNotMove = (result) => {        
+    const onNotMove = (result, text) => {        
         if(window.innerWidth <= resizeOpt.tabletS) {
             const maxwidth = thumImgRef.current ? thumImgRef.current.offsetWidth : 0;
             const maxheight = thumImgRef.current?maxwidth * 0.56 : 0;
@@ -96,6 +96,8 @@ const Thum = ({cut}) => {
             setWidth(0);
             setHeight(0);
         } else {
+            const xxx = `${mountimg}${text}`;
+            setImg(xxx);
             setHeight(result);
         }
     }
@@ -108,8 +110,7 @@ const Thum = ({cut}) => {
         const widthThree = imgRef.current.offsetWidth / 3 * 3;
         
         // first image
-        if(mouseX >= 0 && mouseX < widthOne){
-            setImg(`${mountimg}_y1.jpg`);
+        if(mouseX >= 0 && mouseX < widthOne){            
             const aw = widthOne / 25;
             const bw = mouseX / aw;
             const cw = Math.floor(bw);
@@ -123,11 +124,10 @@ const Thum = ({cut}) => {
             const dh = ch % 5;
             const resultHeight = imgmaxheight / 5 * dh;
 
-            onNotMove(resultHeight);
+            onNotMove(resultHeight, '_y1.jpg');
         }
         //  second image
-        if(mouseX >= widthOne && mouseX < widthTwo) {
-            setImg(`${mountimg}_y2.jpg`);
+        if(mouseX >= widthOne && mouseX < widthTwo) {            
             const aw = widthTwo / 25;
             const bw = mouseX / aw;
             const cw = Math.floor(bw);
@@ -141,11 +141,10 @@ const Thum = ({cut}) => {
             const dh = ch % 5;
             const resultHeight = imgmaxheight / 5 * dh;
             
-            onNotMove(resultHeight);
+            onNotMove(resultHeight, '_y2.jpg');
         };
         // third image
         if(mouseX >= widthTwo && mouseX < widthThree) {
-            setImg(`${mountimg}_y3.jpg`);
             const aw = widthThree / 25;
             const bw = mouseX / aw;
             const cw = Math.floor(bw);
@@ -159,7 +158,7 @@ const Thum = ({cut}) => {
             const dh = ch % 5;
             const resultHeight = imgmaxheight / 5 * dh;
             
-            onNotMove(resultHeight);
+            onNotMove(resultHeight, '_y3.jpg');
         };
     }, [mountimg, imgRef, cut, setWidth, setHeight, imgmaxwidth, imgmaxheight, setImg, setMousemove]);
 
