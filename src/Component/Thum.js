@@ -52,30 +52,36 @@ const Thum = ({cut}) => {
     const [imgmaxwidth, setImgMaxWidth] = useState(0); // 25개 짜리 이미지 넓이 또는 하나 자리 넓이 세팅
     const [imgmaxheight, setImgMaxHeight] = useState(0); // 25개 짜리 이미지 높이 또는 하나 자리 높이 세팅
     
-    // mouseout 
-    const onMouseOut = useCallback(()=>{
-        if(mousemove) {
-            setImg(cut);
-            const maxwidth = thumImgRef.current?thumImgRef.current.offsetWidth : 0;
-            const maxheight = thumImgRef.current?maxwidth * 0.56 : 0;
-            setImgMaxWidth(maxwidth);
-            setImgMaxHeight(maxheight);
-            setWillmount(true);
-            setMousemove(false);
-            setWidth(0);
-            setHeight(0);
-        }
-    }, [cut, setImg, thumImgRef.current, setImgMaxWidth, setImgMaxHeight, setWillmount, mousemove, setMousemove]);
+    // resizing
+    const resize = useCallback(() => {
+        const maxWidth = thumImgRef.current ? thumImgRef.current.offsetWidth : 0;
+        const maxHeight = thumImgRef.current ? maxWidth * 0.56 : 0;
 
-    // 25 big size img setting
+        setImgMaxWidth(maxWidth);
+        setImgMaxHeight(maxHeight);
+    }, [thumImgRef.current, setImgMaxWidth, setImgMaxHeight]);
+
+    useEffect(() => {
+        window.addEventListener('resize', resize);
+        return () => {
+            window.removeEventListener('resize', resize);
+        }
+    }, [resize]);
+
+    //최초 렌더시 이미지 및 사이즈 
     useEffect(()=>{
-        if(mousemove) {
-            const maxWidth = thumImgRef.current ? thumImgRef.current.offsetWidth * 5 : 0;
-            const maxHeight = thumImgRef.current ? maxWidth * 0.56 : 0;
+        const maxWidth = thumImgRef.current ? thumImgRef.current.offsetWidth : 0;
+        const maxHeight = thumImgRef.current ? maxWidth * 0.56 : 0;
+        
+        if(!mousemove){
+            const resultImg = cut.replace(/.jpg/gi, "");
+            setMountimg(resultImg);
+            setImg(cut);
             setImgMaxWidth(maxWidth);
             setImgMaxHeight(maxHeight);
+            setWillmount(false);
         }
-    },[thumImgRef, mousemove, thumImgRef.current, setImgMaxWidth, setImgMaxHeight]);
+    }, [cut, mousemove, setMountimg, setImg, thumImgRef.current, setImgMaxWidth, setImgMaxHeight, setWillmount])
 
     // mouse move event
     const onNotMove = (result) => {        
@@ -157,36 +163,30 @@ const Thum = ({cut}) => {
         };
     }, [mountimg, imgRef, cut, setWidth, setHeight, imgmaxwidth, imgmaxheight, setImg, setMousemove]);
 
-    // resizing
-    const resize = useCallback(() => {
-        const maxWidth = thumImgRef.current ? thumImgRef.current.offsetWidth : 0;
-        const maxHeight = thumImgRef.current ? maxWidth * 0.56 : 0;
-
-        setImgMaxWidth(maxWidth);
-        setImgMaxHeight(maxHeight);
-    }, [thumImgRef.current, setImgMaxWidth, setImgMaxHeight]);
-
-    useEffect(() => {
-        window.addEventListener('resize', resize);
-        return () => {
-            window.removeEventListener('resize', resize);
-        }
-    }, [resize]);
-
-    //최초 렌더시 이미지 및 사이즈 
-    useEffect(()=>{
-        const maxWidth = thumImgRef.current ? thumImgRef.current.offsetWidth : 0;
-        const maxHeight = thumImgRef.current ? maxWidth * 0.56 : 0;
-        
-        if(!mousemove){
-            const resultImg = cut.replace(/.jpg/gi, "");
-            setMountimg(resultImg);
+    // mouseout 
+    const onMouseOut = useCallback(()=>{
+        if(mousemove) {
             setImg(cut);
+            const maxwidth = thumImgRef.current?thumImgRef.current.offsetWidth : 0;
+            const maxheight = thumImgRef.current?maxwidth * 0.56 : 0;
+            setImgMaxWidth(maxwidth);
+            setImgMaxHeight(maxheight);
+            setWillmount(true);
+            setMousemove(false);
+            setWidth(0);
+            setHeight(0);
+        }
+    }, [cut, setImg, thumImgRef.current, setImgMaxWidth, setImgMaxHeight, setWillmount, mousemove, setMousemove]);
+
+    // 25 big size img setting
+    useEffect(()=>{
+        if(mousemove) {
+            const maxWidth = thumImgRef.current ? thumImgRef.current.offsetWidth * 5 : 0;
+            const maxHeight = thumImgRef.current ? maxWidth * 0.56 : 0;
             setImgMaxWidth(maxWidth);
             setImgMaxHeight(maxHeight);
-            setWillmount(false);
         }
-    }, [cut, setMountimg, setImg, thumImgRef.current, setImgMaxWidth, setImgMaxHeight])
+    },[thumImgRef, mousemove, thumImgRef.current, setImgMaxWidth, setImgMaxHeight]);
     
     return (
         <ItemList>
